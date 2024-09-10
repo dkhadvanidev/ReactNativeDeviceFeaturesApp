@@ -147,58 +147,64 @@ export const init = async () => {
 };
 
 export const insertPlace = async (place) => {
-  const result = await db.runAsync(
-    "INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?)",
-    [
-      place.title,
-      place.imageUri,
-      place.address,
-      place.location.lat,
-      place.location.lng,
-    ]
-  );
-  return result;
+  try {
+    const result = await db.runAsync(
+      "INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?)",
+      [
+        place.title,
+        place.imageUri,
+        place.address,
+        place.location.lat,
+        place.location.lng,
+      ]
+    );
+    console.log("Place inserted successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error executing SQL:", error);
+    throw error;
+  }
 };
 
-// console.log("places", places);
-// places.forEach((place) => {
-//   const address = place.address;
-//   console.log(address);
-//   placesArray.push(
-//     new Place(
-//       place.title,
-//       place.imageUri,
-//       { address: place.address, latitude: place.lat, longitude: place.lng },
-//       place.id
-//     )
-//   );
-// });
-// for (let i = 0; i < places.length; i++) {
 export const fetchPlaces = async () => {
   try {
-    const placesArray = [];
+    // const placesArray = [];
     const places = await db.getAllAsync("SELECT * FROM places");
-    for (const place of places) {
-      // const place = places[i];
+
+    const placesArray = places.map((place) => {
       console.log("place:", place);
       console.log("place.address:", place.address);
-      placesArray.push(
-        new Place(
-          place.title,
-          place.imageUri,
 
-          {
-            address: place.address,
-            lat: place.lat,
-            lng: place.lng,
-          },
-          place.id
-        )
+      return new Place(
+        place.title,
+        place.imageUri,
+        {
+          address: place.address,
+          lat: place.lat,
+          lng: place.lng,
+        },
+        place.id
       );
-    }
+    });
+    // for (const place of places) {
+
+    //   placesArray.push(
+    //     new Place(
+    //       place.title,
+    //       place.imageUri,
+
+    //       {
+    //         address: place.address,
+    //         lat: place.lat,
+    //         lng: place.lng,
+    //       },
+    //       place.id
+    //     )
+    //   );
+    // }
     return placesArray;
   } catch (error) {
-    console.error("Error fetching places:", error);
+    console.error("Error Fetching places:", error);
     throw error;
   }
 };

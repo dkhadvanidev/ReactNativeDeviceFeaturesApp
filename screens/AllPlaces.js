@@ -11,6 +11,7 @@ export default function AllPlaces({ route }) {
   useEffect(() => {
     async function loadPlaces() {
       const places = await fetchPlaces();
+      // console.log("AllPlaces places:", places);
       setLoadedPlaces(places);
     }
     if (isFocused) {
